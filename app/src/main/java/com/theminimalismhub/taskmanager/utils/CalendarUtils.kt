@@ -7,6 +7,7 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.CalendarContract
 import android.util.Log
+import com.theminimalismhub.taskmanager.feature_calendar.domain.model.Calendar
 import com.theminimalismhub.taskmanager.feature_task.domain.model.Task
 import java.util.Date
 
@@ -14,6 +15,44 @@ import java.util.Date
 class CalendarUtils {
 
     companion object {
+
+        fun getAllCalendars(context: Context): List<Calendar> {
+            val contentResolver: ContentResolver = context.contentResolver
+            val uri = CalendarContract.Calendars.CONTENT_URI
+            val projection = arrayOf(
+                CalendarContract.Calendars._ID,
+                CalendarContract.Calendars.CALENDAR_DISPLAY_NAME,
+                CalendarContract.Calendars.ACCOUNT_NAME
+            )
+
+            val cursor: Cursor? = contentResolver.query(
+                uri,
+                projection,
+                null,
+                null,
+                null
+            )
+
+            val calendars = mutableListOf<Calendar>()
+
+            cursor?.use {
+                while (it.moveToNext()) {
+                    val calendarId = it.getLong(it.getColumnIndex(CalendarContract.Calendars._ID))
+                    val calendarName = it.getString(it.getColumnIndex(CalendarContract.Calendars.CALENDAR_DISPLAY_NAME))
+                    val accountName = it.getString(it.getColumnIndex(CalendarContract.Calendars.ACCOUNT_NAME))
+
+                    val calendarInfo = Calendar(
+                        id = calendarId,
+                        name = calendarName,
+                        accountName = accountName
+                    )
+
+                    calendars.add(calendarInfo)
+                }
+            }
+
+            return calendars
+        }
 
         fun getCalendarEvents(context: Context, calendarId: String = "24") : List<Task> {
             val contentResolver: ContentResolver = context.contentResolver

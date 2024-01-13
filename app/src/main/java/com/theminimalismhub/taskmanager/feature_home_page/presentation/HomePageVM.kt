@@ -17,10 +17,24 @@ class HomePageVM @Inject constructor(
 ) : ViewModel() {
     private val _state = mutableStateOf(HomePageState())
     val state: State<HomePageState> = _state
+    private lateinit var context: Context
 
     fun init(context: Context) {
+        this.context = context
         _state.value = _state.value.copy(
-            tasks = CalendarUtils.getCalendarEvents(context)
+            calendars = CalendarUtils.getAllCalendars(context)
+//            tasks = CalendarUtils.getCalendarEvents(context)
         )
+    }
+
+    fun onEvent(event: HomePageEvent) {
+        when(event) {
+            is HomePageEvent.SelectCalendar -> {
+                _state.value = _state.value.copy(
+                    calendars = emptyList(),
+                    tasks = CalendarUtils.getCalendarEvents(context, event.id.toString())
+                )
+            }
+        }
     }
 }

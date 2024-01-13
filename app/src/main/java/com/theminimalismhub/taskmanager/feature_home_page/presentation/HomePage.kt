@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.theminimalismhub.taskmanager.core.consts.Padding
 import com.theminimalismhub.taskmanager.core.navigation.pages.Page
+import com.theminimalismhub.taskmanager.feature_calendar.presentation.composables.CalendarTile
 import com.theminimalismhub.taskmanager.feature_task.presentation.TaskTile
 import com.theminimalismhub.taskmanager.utils.CalendarUtils
 import com.theminimalismhub.taskmanager.utils.TimeConverter
@@ -34,10 +35,18 @@ fun HomePage(vm: HomePageVM = hiltViewModel()) {
             style = MaterialTheme.typography.headlineMedium
         )
         Text(
-            modifier = Modifier.alpha(0.6f).padding(start = 2.dp),
+            modifier = Modifier
+                .alpha(0.6f)
+                .padding(start = 2.dp),
             text = TimeConverter.getCurrentFormattedDate(),
             style = MaterialTheme.typography.labelMedium.copy(fontSize = 14.sp)
         )
+
+        Spacer(modifier = Modifier.height(Padding.SECTION_LARGE))
+        vm.state.value.calendars.forEach { calendar ->
+            CalendarTile(calendar = calendar) { vm.onEvent(HomePageEvent.SelectCalendar(it.id)) }
+            Spacer(modifier = Modifier.height(Padding.SECTION))
+        }
 
         Spacer(modifier = Modifier.height(Padding.SECTION_LARGE))
         vm.state.value.tasks.sortedBy { it.timeStart } .forEach { task ->
