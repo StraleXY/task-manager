@@ -31,7 +31,7 @@ class HomePageVM @Inject constructor(
         when(event) {
             is HomePageEvent.SelectCalendar -> {
                 _state.value = _state.value.copy(
-                    calendars = emptyList(),
+                    selectedCalendar = _state.value.calendars.first { it.id == event.id },
                     tasks = CalendarUtils.getCalendarEvents(context, event.id.toString())
                 )
             }
