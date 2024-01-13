@@ -40,7 +40,7 @@ fun HomePage(vm: HomePageVM = hiltViewModel()) {
         )
 
         Spacer(modifier = Modifier.height(Padding.SECTION_LARGE))
-        vm.state.value.tasks.forEach { task ->
+        vm.state.value.tasks.sortedBy { it.timeStart } .forEach { task ->
             TaskTile(task = task)
             Spacer(modifier = Modifier.height(Padding.SECTION))
         }
