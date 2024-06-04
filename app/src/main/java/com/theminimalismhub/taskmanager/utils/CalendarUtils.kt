@@ -9,6 +9,9 @@ import android.provider.CalendarContract
 import android.util.Log
 import com.theminimalismhub.taskmanager.feature_calendar.domain.model.Calendar
 import com.theminimalismhub.taskmanager.feature_task.domain.model.Task
+import java.time.LocalDateTime
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
 import java.util.Date
 
 @SuppressLint("Range")
@@ -54,7 +57,7 @@ class CalendarUtils {
             return calendars
         }
 
-        fun getCalendarEvents(context: Context, calendarId: String = "24") : List<Task> {
+        fun getCalendarEvents(context: Context, calendarId: String = "24", daysToShow: Long = 30) : List<Task> {
             val contentResolver: ContentResolver = context.contentResolver
             val projection = arrayOf(
                 CalendarContract.Events._ID,
@@ -63,12 +66,19 @@ class CalendarUtils {
                 CalendarContract.Events.DTEND,
                 CalendarContract.Events.CALENDAR_ID,
                 CalendarContract.Events.ACCOUNT_NAME,
-                CalendarContract.Events.CALENDAR_DISPLAY_NAME
+                CalendarContract.Events.CALENDAR_DISPLAY_NAME,
+                CalendarContract.Events.DISPLAY_COLOR
             )
 
-            val currentTime = System.currentTimeMillis()
-            val selection = "${CalendarContract.Events.DTEND} > ? AND ${CalendarContract.Events.CALENDAR_ID} == ?"
-            val selectionArgs = arrayOf(currentTime.toString(), calendarId)
+            val currentTime = LocalDateTime.now().toEpochSecond(ZonedDateTime.now().offset) * 1000
+            val targetTime = LocalDateTime
+                .of(LocalDateTime.now().year, LocalDateTime.now().month, LocalDateTime.now().dayOfMonth, 23, 59)
+                .plusDays(daysToShow - 1)
+                .toEpochSecond(ZonedDateTime.now().offset) * 1000
+            Log.i("CalendarUtils", "from: $currentTime to $targetTime")
+
+            val selection = "${CalendarContract.Events.DTEND} > ? AND ${CalendarContract.Events.DTSTART} < ? AND ${CalendarContract.Events.CALENDAR_ID} == ?"
+            val selectionArgs = arrayOf(currentTime.toString(), targetTime.toString(), calendarId)
 
             val cursor: Cursor? = contentResolver.query(
                 CalendarContract.Events.CONTENT_URI,
@@ -82,26 +92,41 @@ class CalendarUtils {
 
             cursor?.use {
                 while (it.moveToNext()) {
-                    val eventId = it.getLong(it.getColumnIndex(CalendarContract.Events._ID))
-                    val title = it.getString(it.getColumnIndex(CalendarContract.Events.TITLE))
-                    val startTime = it.getLong(it.getColumnIndex(CalendarContract.Events.DTSTART))
-                    val endTime = it.getLong(it.getColumnIndex(CalendarContract.Events.DTEND))
-                    val name = it.getString(it.getColumnIndex(CalendarContract.Events.ACCOUNT_NAME))
-                    val calendarId = it.getLong(it.getColumnIndex(CalendarContract.Events.CALENDAR_ID))
-                    val calendarName = it.getString(it.getColumnIndex(CalendarContract.Events.CALENDAR_DISPLAY_NAME))
+                    try {
+                        val eventId = it.getLong(it.getColumnIndex(CalendarContract.Events._ID))
+                        val title = it.getString(it.getColumnIndex(CalendarContract.Events.TITLE))
+                        val startTime = it.getLong(it.getColumnIndex(CalendarContract.Events.DTSTART))
+                        val endTime = it.getLong(it.getColumnIndex(CalendarContract.Events.DTEND))
+                        val name = it.getString(it.getColumnIndex(CalendarContract.Events.ACCOUNT_NAME))
+                        val calendarId = it.getLong(it.getColumnIndex(CalendarContract.Events.CALENDAR_ID))
+                        val calendarName = it.getString(it.getColumnIndex(CalendarContract.Events.CALENDAR_DISPLAY_NAME))
+                        val color = it.getString(it.getColumnIndex(CalendarContract.Events.DISPLAY_COLOR))
 
-                    tasks.add(Task(
-                        id = eventId,
-                        title = title,
-                        timeStart = startTime,
-                        timeEnd = endTime,
-                        calendarId = calendarId,
-                        calendarName = calendarName
-                    ))
+                        tasks.add(Task(
+                            id = eventId,
+                            title = title,
+                            timeStart = startTime,
+                            timeEnd = endTime,
+                            calendarId = calendarId,
+                            calendarName = calendarName,
+                            color = color
+                        ))
+                    }
+                    catch (ex: Exception) {
+                        Log.e("CalendarUtils Exception", ex.stackTraceToString())
+                    }
                 }
             }
 
             return tasks.toList()
+        }
+
+        fun getTodayTasks(context: Context, calendars: List<String>) : List<Task> {
+            var task = mutableListOf<Task>()
+            calendars.forEach {
+                task.addAll(getCalendarEvents(context, it, 2))
+            }
+            return task
         }
     }
 }

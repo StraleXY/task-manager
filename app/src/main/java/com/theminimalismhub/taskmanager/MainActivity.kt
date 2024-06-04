@@ -15,6 +15,7 @@ import androidx.core.view.updatePadding
 import com.theminimalismhub.taskmanager.core.navigation.CoreViewGUI
 import com.theminimalismhub.taskmanager.core.navigation.NavigationController
 import com.theminimalismhub.taskmanager.feature_home_page.presentation.HomePage
+import com.theminimalismhub.taskmanager.feature_my_day.presentation.MyDayPage
 import com.theminimalismhub.taskmanager.ui.theme.TaskManagerTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -41,7 +42,7 @@ class MainActivity : ComponentActivity() {
                 NavigationController.init(emptyList())
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
                     CoreViewGUI {
-                        HomePage()
+                        MyDayPage()
                     }
                 }
             }

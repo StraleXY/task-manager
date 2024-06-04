@@ -1,8 +1,11 @@
 package com.theminimalismhub.taskmanager.utils
 
+import android.util.Log
 import java.text.SimpleDateFormat
 import java.time.Duration
 import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZonedDateTime
 import java.util.Date
 import java.util.Locale
 
@@ -18,13 +21,29 @@ class TimeConverter {
         }
 
         fun getFormattedDate(timestamp: Long) : String {
-            val dateFormat = SimpleDateFormat("EEE, MMM dd - hh:mm", Locale.US)
+            val dateFormat = SimpleDateFormat("EEE, MMM dd - HH:mm", Locale.US)
             return dateFormat.format(Date(timestamp)).replace("-", "at")
+        }
+
+        fun getFormattedTime(timestamp: Long) : String {
+            val dateFormat = SimpleDateFormat("HH:mm", Locale.US)
+            return dateFormat.format(Date(timestamp))
+        }
+
+        fun getFormattedDateInterval(from: Long, to: Long) : String {
+            val dateFormat = SimpleDateFormat("HH:mm", Locale.US)
+            return dateFormat.format(Date(from)) + " - " + dateFormat.format(Date(to))
         }
 
         fun getCurrentFormattedDate() : String {
             val dateFormat = SimpleDateFormat("EEE, MMM dd", Locale.US)
             return dateFormat.format(Date(getCurrentMilli())).replace("-", "at")
+        }
+
+        fun areOnSameDay(one: Long, two: Long) : Boolean {
+            val first = LocalDateTime.ofInstant(Instant.ofEpochMilli(one), ZonedDateTime.now().offset)
+            val second = LocalDateTime.ofInstant(Instant.ofEpochMilli(two), ZonedDateTime.now().offset)
+            return first.year == second.year && first.month == second.month && first.dayOfMonth == second.dayOfMonth
         }
 
         fun getFormattedTimeUntil(timestamp: Long) : Pair<Int, String> {
@@ -40,6 +59,27 @@ class TimeConverter {
 
             val minutesUntil = duration.toMinutes().toInt()
             return Pair(minutesUntil, "MIN")
+        }
+
+        fun getPreciseFormattedTimeUntil(timestamp: Long, from: Long? = null) : String? {
+
+            val currentInstant = if(from == null) Instant.now() else Instant.ofEpochMilli(from)
+            val targetInstant = Instant.ofEpochMilli(timestamp)
+
+            val duration = Duration.between(currentInstant, targetInstant)
+            if (duration.isZero) return null
+
+            var formatted = ""
+
+            val hoursUntil = duration.toHours().toInt()
+            if (hoursUntil != 0) formatted += "%02d:".format(hoursUntil)
+            else formatted += "00:"
+
+            val minutesUntil = duration.toMinutes().toInt() - hoursUntil * 60
+            if (minutesUntil != 0) formatted += "%02d".format(minutesUntil)
+            else formatted += "00"
+
+            return formatted
         }
     }
 }

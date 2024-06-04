@@ -83,7 +83,7 @@ fun CoreViewGUI(
             .offset(y = animatedOffset)
             .clip(RoundedCornerShape(8.dp))
             .scale(animatedScale)
-        ) { HomePage() }
+        ) { homepage() }
 
         Overlay(visible = vm.navigationController.isOverlay)
         AnimatedVisibility(visible = vm.navigationController.pages.isNotEmpty(), enter = fadeIn(tween(0)), exit = fadeOut(tween(0))) {

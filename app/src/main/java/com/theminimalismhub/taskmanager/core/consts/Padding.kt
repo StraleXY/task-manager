@@ -3,6 +3,7 @@ package com.theminimalismhub.taskmanager.core.consts
 import androidx.compose.ui.unit.dp
 
 object Padding {
+    val SECTION_MASSIVE = 96.dp
     val SECTION_LARGE = 48.dp
     val SECTION = 24.dp
     val SECTION_SMALL = 12.dp
