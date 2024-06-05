@@ -6,5 +6,7 @@ data class Task(
     val timeStart: Long = 0L,
     val timeEnd: Long = 0L,
     val calendarId: Long = 0L,
-    val calendarName: String = ""
+    val calendarName: String = "",
+    val color: String? = null,
+    val allDay: Boolean = false
 )

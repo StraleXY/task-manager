@@ -34,7 +34,6 @@ import com.theminimalismhub.taskmanager.core.consts.Screen
 import com.theminimalismhub.taskmanager.core.navigation.pages.PageWrapper
 import com.theminimalismhub.taskmanager.core.navigation.popup.Dialog
 import com.theminimalismhub.taskmanager.core.navigation.popup.PopUpWrapper
-import com.theminimalismhub.taskmanager.feature_home_page.presentation.HomePage
 import kotlinx.coroutines.delay
 
 @Composable
@@ -83,7 +82,7 @@ fun CoreViewGUI(
             .offset(y = animatedOffset)
             .clip(RoundedCornerShape(8.dp))
             .scale(animatedScale)
-        ) { HomePage() }
+        ) { homepage() }
 
         Overlay(visible = vm.navigationController.isOverlay)
         AnimatedVisibility(visible = vm.navigationController.pages.isNotEmpty(), enter = fadeIn(tween(0)), exit = fadeOut(tween(0))) {

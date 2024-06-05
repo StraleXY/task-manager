@@ -38,14 +38,14 @@ val Typography = Typography(
     headlineMedium = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Light,
-        fontSize = 28.sp,
+        fontSize = 26.sp,
         letterSpacing = 0.5.sp
     ),
     headlineSmall = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Light,
-        fontSize = 22.sp,
-        letterSpacing = 0.5.sp
+        fontSize = 21.sp,
+        letterSpacing = 0.4.sp
     ),
     titleLarge = TextStyle(
         fontFamily = FontFamily.Default,
