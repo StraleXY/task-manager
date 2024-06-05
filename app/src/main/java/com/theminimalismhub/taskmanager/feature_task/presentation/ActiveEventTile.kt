@@ -50,23 +50,23 @@ fun ActiveEventTile(
             style = MaterialTheme.typography.headlineMedium,
             color = Color(task.color?.toInt() ?: 0)
         )
-        Spacer(modifier = Modifier.height(Padding.ITEM_M))
-        Text(
-            modifier = Modifier.alpha(0.8f),
-            text = (if(isUpcoming) "UPCOMING" else "ONGOING") + " EVENT",
-            style = MaterialTheme.typography.labelMedium,
-        )
-        Spacer(modifier = Modifier.height(Padding.ITEM_S))
-        Text(
-            text = timeToShow!!,
-            style = MaterialTheme.typography.headlineLarge,
-            fontSize = 60.sp
-        )
         Spacer(modifier = Modifier.height(Padding.ITEM_S))
         Text(
             modifier = Modifier.alpha(0.6f),
             text = TimeConverter.getFormattedDateInterval(task.timeStart, task.timeEnd),
             style = MaterialTheme.typography.labelMedium
+        )
+        Spacer(modifier = Modifier.height(Padding.ITEM_M))
+        Text(
+            text = timeToShow!!,
+            style = MaterialTheme.typography.headlineLarge,
+            fontSize = 65.sp
+        )
+        Spacer(modifier = Modifier.height(Padding.ITEM_S))
+        Text(
+            modifier = Modifier.alpha(0.8f),
+            text = if(isUpcoming) "UPCOMING" else "ONGOING",
+            style = MaterialTheme.typography.labelMedium,
         )
     }
 }

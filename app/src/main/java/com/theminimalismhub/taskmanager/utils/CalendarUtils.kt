@@ -67,7 +67,8 @@ class CalendarUtils {
                 CalendarContract.Events.CALENDAR_ID,
                 CalendarContract.Events.ACCOUNT_NAME,
                 CalendarContract.Events.CALENDAR_DISPLAY_NAME,
-                CalendarContract.Events.DISPLAY_COLOR
+                CalendarContract.Events.DISPLAY_COLOR,
+                CalendarContract.Events.ALL_DAY
             )
 
             val currentTime = LocalDateTime.now().toEpochSecond(ZonedDateTime.now().offset) * 1000
@@ -101,6 +102,7 @@ class CalendarUtils {
                         val calendarId = it.getLong(it.getColumnIndex(CalendarContract.Events.CALENDAR_ID))
                         val calendarName = it.getString(it.getColumnIndex(CalendarContract.Events.CALENDAR_DISPLAY_NAME))
                         val color = it.getString(it.getColumnIndex(CalendarContract.Events.DISPLAY_COLOR))
+                        val allDay = it.getInt(it.getColumnIndex(CalendarContract.Events.ALL_DAY))
 
                         tasks.add(Task(
                             id = eventId,
@@ -109,7 +111,8 @@ class CalendarUtils {
                             timeEnd = endTime,
                             calendarId = calendarId,
                             calendarName = calendarName,
-                            color = color
+                            color = color,
+                            allDay = allDay == 1
                         ))
                     }
                     catch (ex: Exception) {

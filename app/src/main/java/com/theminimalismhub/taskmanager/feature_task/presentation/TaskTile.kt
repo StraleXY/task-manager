@@ -58,7 +58,7 @@ fun TaskTile(task: Task) {
             )
             Text(
                 modifier = Modifier.alpha(0.6f),
-                text = TimeConverter.getFormattedDate(task.timeStart),
+                text = TimeConverter.getFormattedDate(task.timeStart, task.allDay),
                 style = MaterialTheme.typography.labelMedium
             )
         }

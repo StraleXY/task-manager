@@ -20,8 +20,10 @@ class TimeConverter {
             return timestamp - getCurrentMilli()
         }
 
-        fun getFormattedDate(timestamp: Long) : String {
-            val dateFormat = SimpleDateFormat("EEE, MMM dd - HH:mm", Locale.US)
+        fun getFormattedDate(timestamp: Long, allDay: Boolean = false) : String {
+            val dateFormat =
+                if (allDay) SimpleDateFormat("EEE, MMM dd", Locale.US)
+                else SimpleDateFormat("EEE, MMM dd - HH:mm", Locale.US)
             return dateFormat.format(Date(timestamp)).replace("-", "at")
         }
 
@@ -52,7 +54,7 @@ class TimeConverter {
             val duration = Duration.between(currentInstant, targetInstant)
 
             val daysUntil = duration.toDays().toInt()
-            if (daysUntil != 0) return Pair(daysUntil, "DAYS")
+            if (daysUntil != 0) return Pair(daysUntil + 1, "DAYS")
 
             val hoursUntil = duration.toHours().toInt()
             if (hoursUntil != 0) return Pair(hoursUntil, "HOURS")

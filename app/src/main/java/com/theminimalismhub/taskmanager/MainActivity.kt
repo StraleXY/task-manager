@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
                 NavigationController.init(emptyList())
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
                     CoreViewGUI {
-                        MyDayPage()
+                        HomePage()
                     }
                 }
             }

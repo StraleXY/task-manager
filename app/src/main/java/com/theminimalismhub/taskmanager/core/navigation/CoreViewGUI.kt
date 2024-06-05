@@ -34,7 +34,6 @@ import com.theminimalismhub.taskmanager.core.consts.Screen
 import com.theminimalismhub.taskmanager.core.navigation.pages.PageWrapper
 import com.theminimalismhub.taskmanager.core.navigation.popup.Dialog
 import com.theminimalismhub.taskmanager.core.navigation.popup.PopUpWrapper
-import com.theminimalismhub.taskmanager.feature_home_page.presentation.HomePage
 import kotlinx.coroutines.delay
 
 @Composable
