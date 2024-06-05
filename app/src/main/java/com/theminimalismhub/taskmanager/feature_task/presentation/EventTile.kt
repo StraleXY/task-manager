@@ -1,12 +1,17 @@
 package com.theminimalismhub.taskmanager.feature_task.presentation
 
 import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Icon
@@ -23,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -57,7 +63,14 @@ fun EventTile(
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Column(modifier = Modifier.width(60.dp)) {
+        Box(
+            modifier = Modifier
+                .width(5.dp)
+                .height(44.dp)
+                .clip(RoundedCornerShape(3.dp))
+                .background(Color(task.color?.toInt() ?: 0))
+        )
+        if(false) Column(modifier = Modifier.width(60.dp)) {
 
             if (timeToShow != null) Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -97,14 +110,14 @@ fun EventTile(
         Spacer(modifier = Modifier.width(Padding.CONTAINER_S))
         Column {
             Text(
-                text = task.title,
-                style = MaterialTheme.typography.bodyLarge,
-                color = Color(task.color?.toInt() ?: 0)
-            )
-            Text(
                 modifier = Modifier.alpha(0.6f),
                 text = TimeConverter.getFormattedDateInterval(task.timeStart, task.timeEnd),
                 style = MaterialTheme.typography.labelMedium
+            )
+            Spacer(modifier = Modifier.height(Padding.ITEM_S))
+            Text(
+                text = task.title,
+                style = MaterialTheme.typography.titleLarge
             )
         }
     }

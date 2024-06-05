@@ -50,8 +50,8 @@ val Typography = Typography(
     titleLarge = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
-        fontSize = 17.sp,
-        letterSpacing = 0.5.sp
+        fontSize = 19.sp,
+        letterSpacing = 0.25.sp
     ),
     titleMedium = TextStyle(
         fontFamily = FontFamily.Default,

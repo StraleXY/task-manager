@@ -1,5 +1,6 @@
 package com.theminimalismhub.taskmanager.feature_my_day.presentation
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,6 +16,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.theminimalismhub.taskmanager.core.consts.Padding
 import com.theminimalismhub.taskmanager.core.navigation.pages.Page
 import com.theminimalismhub.taskmanager.feature_task.presentation.ActiveEventTile
+import com.theminimalismhub.taskmanager.feature_task.presentation.BetweenEvents
 import com.theminimalismhub.taskmanager.feature_task.presentation.EventTile
 import com.theminimalismhub.taskmanager.utils.TimeConverter
 
@@ -24,31 +26,36 @@ fun MyDayPage(vm: MyDayVM = hiltViewModel()) {
     val context = LocalContext.current
     vm.init(context)
 
-    Page {
+    Column {
         Spacer(modifier = Modifier.height(Padding.SECTION_MASSIVE))
         vm.state.value.tasks.forEachIndexed { index, task ->
             if(index == 0) {
                 ActiveEventTile(task = task)
                 Spacer(modifier = Modifier.height(Padding.SECTION_MASSIVE))
-                Spacer(modifier = Modifier.height(Padding.SECTION))
-
             }
             else {
                 val onSameDay = TimeConverter.areOnSameDay(task.timeStart, vm.state.value.tasks.get(index - 1).timeStart)
                 if(!onSameDay) {
-                    Spacer(modifier = Modifier.height(Padding.SECTION_LARGE))
                     Text(
-                        modifier = Modifier.alpha(0.8f).padding(start = Padding.ITEM_M),
+                        modifier = Modifier
+                            .alpha(0.8f)
+                            .padding(start = Padding.ITEM_M, top = Padding.SECTION_LARGE),
                         text = "Tomorrow's Events:",
                         style = MaterialTheme.typography.headlineMedium
                     )
                     Spacer(modifier = Modifier.height(Padding.SECTION))
                 }
+                else if (index >= 2) {
+                    BetweenEvents(
+                        previousTime = vm.state.value.tasks.get(index - 1).timeEnd,
+                        nextTime = task.timeStart
+                    )
+                }
                 EventTile(
                     task = task,
                     previousEndTime = if(!onSameDay) null else vm.state.value.tasks.get(index - 1).timeEnd
                 )
-                Spacer(modifier = Modifier.height(Padding.SECTION))
+//                Spacer(modifier = Modifier.height(Padding.SECTION))
             }
         }
     }

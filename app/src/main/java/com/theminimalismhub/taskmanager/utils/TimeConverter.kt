@@ -63,7 +63,7 @@ class TimeConverter {
             return Pair(minutesUntil, "MIN")
         }
 
-        fun getPreciseFormattedTimeUntil(timestamp: Long, from: Long? = null) : String? {
+        fun getPreciseFormattedTimeUntil(timestamp: Long, from: Long? = null, shortFormat: Boolean = true) : String? {
 
             val currentInstant = if(from == null) Instant.now() else Instant.ofEpochMilli(from)
             val targetInstant = Instant.ofEpochMilli(timestamp)
@@ -74,12 +74,16 @@ class TimeConverter {
             var formatted = ""
 
             val hoursUntil = duration.toHours().toInt()
-            if (hoursUntil != 0) formatted += "%02d:".format(hoursUntil)
-            else formatted += "00:"
+            if (hoursUntil != 0) formatted +=
+                if(shortFormat) "%02d:".format(hoursUntil)
+                else "$hoursUntil Hours "
+            else if(shortFormat) formatted += "00:"
 
             val minutesUntil = duration.toMinutes().toInt() - hoursUntil * 60
-            if (minutesUntil != 0) formatted += "%02d".format(minutesUntil)
-            else formatted += "00"
+            if (minutesUntil != 0) formatted +=
+                if(shortFormat) "%02d".format(minutesUntil)
+                else "$minutesUntil Minutes"
+            else if (shortFormat) formatted += "00"
 
             return formatted
         }

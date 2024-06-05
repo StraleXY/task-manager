@@ -49,8 +49,7 @@ fun AssignmentsPage(vm: AssignmentsVM = hiltViewModel()) {
     val context = LocalContext.current
     vm.init(context)
 
-    Page {
-
+    Column {
         Spacer(modifier = Modifier.height(Padding.SECTION))
         vm.state.value.tasks.sortedBy { it.timeStart } .forEach { task ->
             TaskTile(task = task)

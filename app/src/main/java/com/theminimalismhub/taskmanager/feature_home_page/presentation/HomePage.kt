@@ -23,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.fontscaling.MathUtils.lerp
 import com.theminimalismhub.taskmanager.core.consts.Padding
+import com.theminimalismhub.taskmanager.core.navigation.pages.Page
 import com.theminimalismhub.taskmanager.feature_assignments.presentation.AssignmentsPage
 import com.theminimalismhub.taskmanager.feature_my_day.presentation.MyDayPage
 
@@ -37,8 +38,8 @@ fun HomePage() {
     )
     val progress by remember { derivedStateOf { pagerState.getOffsetFractionForPage(pagerState.currentPage) } }
 
-    Column {
-        Spacer(modifier = Modifier.height(Padding.SECTION_LARGE))
+    Page {
+        Spacer(modifier = Modifier.height(Padding.SECTION))
         HorizontalPager(
             modifier = Modifier.fillMaxWidth(),
             state = pagerState
@@ -52,6 +53,7 @@ fun HomePage() {
                textAlign = TextAlign.Center
            )
         }
+        Spacer(modifier = Modifier.height(Padding.SECTION))
         Box(
 
         ) {
