@@ -32,11 +32,15 @@ import com.theminimalismhub.taskmanager.utils.TimeConverter
 
 @Composable
 fun BetweenEvents(
-    previousTime: Long,
-    nextTime: Long
+    previousTime: Long?,
+    nextTime: Long,
+    hideTop: Boolean = false
 ) {
 
-    val timeToShow by remember { mutableStateOf(TimeConverter.getPreciseFormattedTimeUntil(nextTime, previousTime, shortFormat = false)) }
+    val timeToShow by remember { mutableStateOf(
+        if (previousTime == null) TimeConverter.getFormattedTime(nextTime)
+        else TimeConverter.getPreciseFormattedTimeUntil(nextTime, previousTime, shortFormat = false)
+    ) }
 
     Row(
         modifier = Modifier
@@ -49,6 +53,7 @@ fun BetweenEvents(
                 .width(1.5.dp)
                 .height(if(timeToShow == null) 20.dp else 60.dp)
                 .offset(1.5.dp, 0.dp)
+                .padding(top = if(previousTime == null || hideTop) 20.dp else 0.dp)
                 .background(MaterialTheme.colorScheme.primaryContainer)
         )
         timeToShow?.let {
@@ -63,7 +68,7 @@ fun BetweenEvents(
                 )
                 Text(
                     modifier = Modifier,
-                    text = "$timeToShow Later",
+                    text = if(previousTime == null) "Starts at: $timeToShow" else "$timeToShow Later",
                     style = MaterialTheme.typography.displaySmall,
                     fontSize = 16.sp,
                     color = MaterialTheme.colorScheme.tertiary

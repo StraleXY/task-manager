@@ -63,10 +63,10 @@ class TimeConverter {
             return Pair(minutesUntil, "MIN")
         }
 
-        fun getPreciseFormattedTimeUntil(timestamp: Long, from: Long? = null, shortFormat: Boolean = true) : String? {
+        fun getPreciseFormattedTimeUntil(timestamp: Long, from: Long? = null, shortFormat: Boolean = true, inclusive: Boolean = false) : String? {
 
             val currentInstant = if(from == null) Instant.now() else Instant.ofEpochMilli(from)
-            val targetInstant = Instant.ofEpochMilli(timestamp)
+            val targetInstant = Instant.ofEpochMilli(if(inclusive) timestamp + 60000 else timestamp)
 
             val duration = Duration.between(currentInstant, targetInstant)
             if (duration.isZero) return null

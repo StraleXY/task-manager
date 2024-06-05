@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.theminimalismhub.taskmanager.core.consts.Padding
+import com.theminimalismhub.taskmanager.core.navigation.NavigationController.Companion.init
 import com.theminimalismhub.taskmanager.core.navigation.pages.Page
 import com.theminimalismhub.taskmanager.feature_task.presentation.ActiveEventTile
 import com.theminimalismhub.taskmanager.feature_task.presentation.BetweenEvents
@@ -30,7 +31,7 @@ fun MyDayPage(vm: MyDayVM = hiltViewModel()) {
         Spacer(modifier = Modifier.height(Padding.SECTION_MASSIVE))
         vm.state.value.tasks.forEachIndexed { index, task ->
             if(index == 0) {
-                ActiveEventTile(task = task)
+                ActiveEventTile(task = task) { vm.init(context) }
                 Spacer(modifier = Modifier.height(Padding.SECTION_MASSIVE))
             }
             else {
@@ -44,11 +45,16 @@ fun MyDayPage(vm: MyDayVM = hiltViewModel()) {
                         style = MaterialTheme.typography.headlineMedium
                     )
                     Spacer(modifier = Modifier.height(Padding.SECTION))
+                    BetweenEvents(
+                        previousTime = null,
+                        nextTime = task.timeStart
+                    )
                 }
-                else if (index >= 2) {
+                else {
                     BetweenEvents(
                         previousTime = vm.state.value.tasks.get(index - 1).timeEnd,
-                        nextTime = task.timeStart
+                        nextTime = task.timeStart,
+                        hideTop = index == 1
                     )
                 }
                 EventTile(

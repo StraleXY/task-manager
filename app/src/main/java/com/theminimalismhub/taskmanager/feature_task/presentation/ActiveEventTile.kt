@@ -27,15 +27,20 @@ import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun ActiveEventTile(
-    task: Task
+    task: Task,
+    onEnd: () -> Unit
 ) {
     var isUpcoming by remember { mutableStateOf(task.timeStart > System.currentTimeMillis()) }
-    var timeToShow by remember { mutableStateOf(TimeConverter.getPreciseFormattedTimeUntil(if(isUpcoming) task.timeStart else task.timeEnd)) }
-    LaunchedEffect(Unit) {
+    var timeToShow by remember { mutableStateOf(TimeConverter.getPreciseFormattedTimeUntil(if(isUpcoming) task.timeStart else task.timeEnd, inclusive = true)) }
+    LaunchedEffect(task) {
         while (true) {
             delay(1.seconds)
             isUpcoming = task.timeStart > System.currentTimeMillis()
-            timeToShow = TimeConverter.getPreciseFormattedTimeUntil(if(isUpcoming) task.timeStart else task.timeEnd)
+            timeToShow = TimeConverter.getPreciseFormattedTimeUntil(if(isUpcoming) task.timeStart else task.timeEnd, inclusive = true)
+            if(timeToShow == "00:00" && !isUpcoming) {
+                onEnd()
+                break
+            }
         }
     }
 
