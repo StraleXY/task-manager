@@ -3,6 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/>
 
     <application
         android:name=".di.TaskManagerApp"
@@ -36,6 +39,11 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/events_widget_info"/>
         </receiver>
+        <service
+            android:name=".feature_my_day.widget.TimeKeeperService"
+            android:foregroundServiceType="specialUse"
+            android:exported="false"/>
+
     </application>
 
 </manifest>

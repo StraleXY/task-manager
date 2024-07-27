@@ -1,5 +1,6 @@
 package com.theminimalismhub.taskmanager.feature_task.presentation
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -51,6 +52,9 @@ fun ActiveEventTile(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
+            modifier = Modifier.clickable {
+
+            },
             text = task.title,
             style = MaterialTheme.typography.headlineMedium,
             color = Color(task.color?.toInt() ?: 0)
