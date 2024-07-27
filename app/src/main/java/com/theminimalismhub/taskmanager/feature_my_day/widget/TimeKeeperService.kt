@@ -47,7 +47,7 @@ class TimeKeeperService : Service() {
         Thread {
             val dispatcherScope = CoroutineScope(Executors.newSingleThreadExecutor().asCoroutineDispatcher())
             while (isServiceRunning) {
-                Thread.sleep(10000)
+                Thread.sleep(30000)
                 val manager = GlanceAppWidgetManager(context)
                 val widget = EventsWidget()
                 dispatcherScope.launch {
@@ -55,9 +55,13 @@ class TimeKeeperService : Service() {
                     glanceIds.forEach { glanceId ->
                         widget.update(context, glanceId)
                     }
-                    Log.i("Worker", "Widget Updated! [Suspend]")
+                    Log.i("Worker", "Widget Updated!")
+
+                    context.getSharedPreferences("TKS", Context.MODE_PRIVATE)
+                        .edit()
+                        .putLong("LU", System.currentTimeMillis())
+                        .apply()
                 }
-                Log.i("Worker", "Widget Updated!")
             }
         }.start()
     }

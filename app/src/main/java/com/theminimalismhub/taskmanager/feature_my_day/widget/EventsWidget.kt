@@ -25,6 +25,7 @@ import androidx.glance.background
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Column
 import androidx.glance.layout.fillMaxSize
+import androidx.glance.layout.padding
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
@@ -47,24 +48,20 @@ class EventsWidget : GlanceAppWidget() {
 
         var tasks = CalendarUtils.getTodayTasks(context, listOf("9", "11", "20", "24", "27", "28", "29")).sortedBy { it.timeStart }
 
-        fun update() {
-            tasks = CalendarUtils.getTodayTasks(context, listOf("9", "11", "20", "24", "27", "28", "29")).sortedBy { it.timeStart }
-        }
-
         provideContent {
-            Main(task = tasks.first(), onEnd = { update() })
+            Main(task = tasks.firstOrNull())
         }
     }
 
     @Composable
     private fun Main(
-        task: Task,
-        onEnd: () -> Unit
+        task: Task?
     ) {
 
-        val isUpcoming by remember { mutableStateOf(task.timeStart > System.currentTimeMillis()) }
-        val timeToShow by remember { mutableStateOf(TimeConverter.getPreciseFormattedTimeUntil(if(isUpcoming) task.timeStart else task.timeEnd, inclusive = true)) }
-
+        val isUpcoming by remember { mutableStateOf((task?.timeStart ?: 0L) > System.currentTimeMillis()) }
+        val timeToShow by remember { mutableStateOf(task?.let { TimeConverter.getPreciseFormattedTimeUntil(if(isUpcoming) task.timeStart else task.timeEnd, inclusive = true) } ?: "" ) }
+        val lastUpdate by remember { mutableStateOf(context.getSharedPreferences("TKS", Context.MODE_PRIVATE).getLong("LU", 0L))
+        }
 
         Column(
             modifier = GlanceModifier
@@ -74,37 +71,62 @@ class EventsWidget : GlanceAppWidget() {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = task.title,
+            if(task == null) Text(
+                text = "No Events",
                 style = TextStyle(
-                    color = ColorProvider(Color(task.color?.toInt() ?: 0)),
+                    color = ColorProvider(Color(1f, 1f, 1f,  0.7f)),
                     fontSize = 26.sp,
                     fontWeight = androidx.glance.text.FontWeight.Normal
                 )
             )
-            Spacer(modifier = GlanceModifier.height(Padding.ITEM_S))
+            task?.let {
+                Text(
+                    text = task.title,
+                    style = TextStyle(
+                        color = ColorProvider(Color(task.color?.toInt() ?: 0)),
+                        fontSize = 26.sp,
+                        fontWeight = androidx.glance.text.FontWeight.Normal
+                    )
+                )
+                Spacer(modifier = GlanceModifier.height(Padding.ITEM_S))
+                Text(
+                    text = TimeConverter.getFormattedDateInterval(task.timeStart, task.timeEnd),
+                    style = TextStyle(
+                        color = ColorProvider(Color(1f, 1f, 1f,  0.8f)),
+                        fontSize = 13.sp,
+                        fontWeight = androidx.glance.text.FontWeight.Normal
+                    )
+                )
+                Spacer(modifier = GlanceModifier.height(Padding.ITEM_S))
+                Text(
+                    text = timeToShow!!,
+                    style = TextStyle(
+                        color = ColorProvider(Color(1f, 1f, 1f)),
+                        fontSize = 65.sp
+                    )
+                )
+                Text(
+                    text = if(isUpcoming) "UPCOMING" else "ONGOING",
+                    style = TextStyle(
+                        color = ColorProvider(Color(1f, 1f, 1f,  0.8f)),
+                        fontSize = 13.sp
+                    )
+                )
+            }
+        }
+        Column(
+            modifier = GlanceModifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.End,
+            verticalAlignment = Alignment.Bottom
+        ) {
             Text(
-                text = TimeConverter.getFormattedDateInterval(task.timeStart, task.timeEnd),
+                text = "Last Updated: ${TimeConverter.getFormattedTime(lastUpdate)}",
                 style = TextStyle(
-                    color = ColorProvider(Color(1f, 1f, 1f,  0.8f)),
+                    color = ColorProvider(Color(1f, 1f, 1f,  0.3f)),
                     fontSize = 13.sp,
                     fontWeight = androidx.glance.text.FontWeight.Normal
-                )
-            )
-            Spacer(modifier = GlanceModifier.height(Padding.ITEM_M))
-            Text(
-                text = timeToShow!!,
-                style = TextStyle(
-                    color = ColorProvider(Color(1f, 1f, 1f)),
-                    fontSize = 65.sp
-                )
-            )
-            Spacer(modifier = GlanceModifier.height(Padding.ITEM_S))
-            Text(
-                text = if(isUpcoming) "UPCOMING" else "ONGOING",
-                style = TextStyle(
-                    color = ColorProvider(Color(1f, 1f, 1f,  0.8f)),
-                    fontSize = 13.sp
                 )
             )
         }
