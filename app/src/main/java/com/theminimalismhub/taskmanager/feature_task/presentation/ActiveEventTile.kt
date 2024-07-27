@@ -18,8 +18,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.sp
+import androidx.glance.appwidget.GlanceAppWidgetManager
+import androidx.glance.appwidget.LocalAppWidgetOptions
 import com.theminimalismhub.taskmanager.core.consts.Padding
+import com.theminimalismhub.taskmanager.feature_my_day.widget.EventsWidget
 import com.theminimalismhub.taskmanager.feature_task.domain.model.Task
 import com.theminimalismhub.taskmanager.utils.TimeConverter
 import kotlinx.coroutines.delay
@@ -30,6 +34,10 @@ fun ActiveEventTile(
     task: Task,
     onEnd: () -> Unit
 ) {
+    val context = LocalContext.current
+    val manager = GlanceAppWidgetManager(context)
+    val widget = EventsWidget()
+
     var isUpcoming by remember { mutableStateOf(task.timeStart > System.currentTimeMillis()) }
     var timeToShow by remember { mutableStateOf(TimeConverter.getPreciseFormattedTimeUntil(if(isUpcoming) task.timeStart else task.timeEnd, inclusive = true)) }
     LaunchedEffect(task) {
@@ -37,6 +45,10 @@ fun ActiveEventTile(
             delay(1.seconds)
             isUpcoming = task.timeStart > System.currentTimeMillis()
             timeToShow = TimeConverter.getPreciseFormattedTimeUntil(if(isUpcoming) task.timeStart else task.timeEnd, inclusive = true)
+            val glanceIds = manager.getGlanceIds(EventsWidget::class.java)
+            glanceIds.forEach { id ->
+                widget.update(context, id)
+            }
             if(timeToShow == "00:00" && !isUpcoming) {
                 onEnd()
                 break

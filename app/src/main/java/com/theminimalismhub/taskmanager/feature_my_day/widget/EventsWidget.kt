@@ -16,15 +16,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.datastore.core.DataStore
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
+import androidx.glance.currentState
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Column
 import androidx.glance.layout.fillMaxSize
+import androidx.glance.state.GlanceStateDefinition
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
@@ -33,38 +36,51 @@ import com.theminimalismhub.taskmanager.feature_task.domain.model.Task
 import com.theminimalismhub.taskmanager.utils.CalendarUtils
 import com.theminimalismhub.taskmanager.utils.TimeConverter
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import java.io.File
 import kotlin.time.Duration.Companion.seconds
+
+
+class EventsStore(private val context: Context): DataStore<List<Task>> {
+    override val data: Flow<List<Task>>
+        get() {
+            val tasks = CalendarUtils.getTodayTasks(context, listOf("9", "11", "20", "24", "27", "28", "29")).sortedBy { it.timeStart }
+            return flow { emit(tasks) }
+        }
+
+    override suspend fun updateData(transform: suspend (t: List<Task>) -> List<Task>): List<Task> {
+        TODO("Not yet implemented")
+    }
+}
+
 
 class EventsWidget : GlanceAppWidget() {
 
-    private lateinit var context: Context
-    private lateinit var id: GlanceId
+    override val stateDefinition: GlanceStateDefinition<List<Task>>
+        get() = object: GlanceStateDefinition<List<Task>> {
+            override suspend fun getDataStore(context: Context, fileKey: String): DataStore<List<Task>> {
+                return EventsStore(context)
+            }
 
-    override suspend fun provideGlance(context: Context, id: GlanceId) {
-
-        this.context = context
-        this.id = id
-
-        var tasks = CalendarUtils.getTodayTasks(context, listOf("9", "11", "20", "24", "27", "28", "29")).sortedBy { it.timeStart }
-
-        fun update() {
-            tasks = CalendarUtils.getTodayTasks(context, listOf("9", "11", "20", "24", "27", "28", "29")).sortedBy { it.timeStart }
+            override fun getLocation(context: Context, fileKey: String): File {
+                TODO("Not yet implemented")
+            }
         }
 
+    override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
-            Main(task = tasks.first(), onEnd = { update() })
+            Main(task = currentState<List<Task>>().first())
         }
     }
 
     @Composable
     private fun Main(
-        task: Task,
-        onEnd: () -> Unit
+        task: Task
     ) {
 
         val isUpcoming by remember { mutableStateOf(task.timeStart > System.currentTimeMillis()) }
         val timeToShow by remember { mutableStateOf(TimeConverter.getPreciseFormattedTimeUntil(if(isUpcoming) task.timeStart else task.timeEnd, inclusive = true)) }
-
 
         Column(
             modifier = GlanceModifier
