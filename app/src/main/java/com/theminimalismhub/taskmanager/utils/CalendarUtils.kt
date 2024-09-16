@@ -124,12 +124,12 @@ class CalendarUtils {
             return tasks.toList()
         }
 
-        fun getTodayTasks(context: Context, calendars: List<String>) : List<Task> {
+        fun getTodayTasks(context: Context, calendars: List<String>, allDay: Boolean = false) : List<Task> {
             var task = mutableListOf<Task>()
             calendars.forEach {
                 task.addAll(getCalendarEvents(context, it, 2))
             }
-            return task
+            return task.filter { it.allDay == allDay }
         }
     }
 }
