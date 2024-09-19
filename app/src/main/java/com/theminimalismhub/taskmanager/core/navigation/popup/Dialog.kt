@@ -38,6 +38,7 @@ data class DialogArgs(
     @DrawableRes val icon: Int? = null,
     val actionLabel: String = "",
     val onAction: (() -> Unit)? = null,
+    val onClose: (() -> Unit)? = null,
     val content: @Composable () -> Unit = { }
 )
 
@@ -46,8 +47,8 @@ class Dialog : PopupItem() {
 
     fun info(title: String, description: String, @DrawableRes icon: Int?) = make(DialogArgs(title = title, description = description, icon = icon))
 
-    fun action(title: String, description: String, actionLabel: String, @DrawableRes icon: Int? = null, onAction: () -> Unit, content: @Composable () -> Unit = {})
-        = make(DialogArgs(title = title, description = description, icon = icon, actionLabel = actionLabel, onAction = onAction, content = content))
+    fun action(title: String, description: String, actionLabel: String, @DrawableRes icon: Int? = null, onAction: () -> Unit, onClose: (() -> Unit)? = null, content: @Composable () -> Unit = {})
+        = make(DialogArgs(title = title, description = description, icon = icon, actionLabel = actionLabel, onAction = onAction, onClose = onClose, content = content))
 
     fun delete(onAction: () -> Unit) = make(
         DialogArgs(
@@ -104,7 +105,12 @@ fun Dialog(
             state.content()
             Spacer(modifier = Modifier.height(12.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                OutlinedButton(onClick = { navigationController.dialog.close() }) { Text(text = "CLOSE", style = MaterialTheme.typography.displayMedium) }
+                OutlinedButton(
+                    onClick = {
+                        state.onClose?.invoke()
+                        navigationController.dialog.close()
+                    }
+                ) { Text(text = "CLOSE", style = MaterialTheme.typography.displayMedium) }
                 state.onAction?.let {
                     Spacer(modifier = Modifier.width(8.dp))
                     Button(

@@ -14,8 +14,10 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.updatePadding
 import com.theminimalismhub.taskmanager.core.navigation.CoreViewGUI
 import com.theminimalismhub.taskmanager.core.navigation.NavigationController
+import com.theminimalismhub.taskmanager.core.navigation.pages.NavPage
 import com.theminimalismhub.taskmanager.feature_home_page.presentation.HomePage
 import com.theminimalismhub.taskmanager.feature_my_day.presentation.MyDayPage
+import com.theminimalismhub.taskmanager.feature_settings.presentation.SettingsPage
 import com.theminimalismhub.taskmanager.ui.theme.TaskManagerTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -39,7 +41,9 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             TaskManagerTheme {
-                NavigationController.init(emptyList())
+                NavigationController.init(listOf(
+                    NavPage(Pages.SETTINGS_KEY) { SettingsPage() }
+                ))
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
                     CoreViewGUI {
                         HomePage()
@@ -51,5 +55,6 @@ class MainActivity : ComponentActivity() {
 }
 
 object Pages {
-
+    const val HOME_KEY = "home_page_key"
+    const val SETTINGS_KEY = "settings_page_key"
 }

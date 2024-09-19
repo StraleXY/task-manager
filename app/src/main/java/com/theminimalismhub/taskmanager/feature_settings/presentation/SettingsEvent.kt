@@ -4,4 +4,6 @@ import com.theminimalismhub.taskmanager.feature_assignments.presentation.Assignm
 
 sealed class SettingsEvent {
     data class SelectCalendar(val id: Long) : SettingsEvent()
+    data class SaveEventCalendars(val ids: List<Long>) : SettingsEvent()
+    data class SaveAssignmentsCalendars(val ids: List<Long>) : SettingsEvent()
 }
