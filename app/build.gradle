@@ -54,7 +54,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.5.1'
+        kotlinCompilerExtensionVersion '1.5.14'
     }
     packaging {
         resources {
@@ -92,8 +92,12 @@ dependencies {
     implementation "androidx.hilt:hilt-navigation-compose:1.1.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2"
 
+    // Widgets
+    implementation "androidx.glance:glance-appwidget:1.1.0"
+    implementation "androidx.glance:glance-material3:1.1.0"
+
     // Room
-//    implementation "androidx.room:room-runtime:2.5.0"
-//    kapt "androidx.room:room-compiler:2.5.0"
-//    implementation "androidx.room:room-ktx:2.5.0"
+    //    implementation "androidx.room:room-runtime:2.5.0"
+    //    kapt "androidx.room:room-compiler:2.5.0"
+    //    implementation "androidx.room:room-ktx:2.5.0"
 }

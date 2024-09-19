@@ -25,7 +25,8 @@ class CalendarUtils {
             val projection = arrayOf(
                 CalendarContract.Calendars._ID,
                 CalendarContract.Calendars.CALENDAR_DISPLAY_NAME,
-                CalendarContract.Calendars.ACCOUNT_NAME
+                CalendarContract.Calendars.ACCOUNT_NAME,
+                CalendarContract.Calendars.CALENDAR_COLOR
             )
 
             val cursor: Cursor? = contentResolver.query(
@@ -43,11 +44,13 @@ class CalendarUtils {
                     val calendarId = it.getLong(it.getColumnIndex(CalendarContract.Calendars._ID))
                     val calendarName = it.getString(it.getColumnIndex(CalendarContract.Calendars.CALENDAR_DISPLAY_NAME))
                     val accountName = it.getString(it.getColumnIndex(CalendarContract.Calendars.ACCOUNT_NAME))
+                    val color = it.getString(it.getColumnIndex(CalendarContract.Calendars.CALENDAR_COLOR))
 
                     val calendarInfo = Calendar(
                         id = calendarId,
                         name = calendarName,
-                        accountName = accountName
+                        accountName = accountName,
+                        color = color
                     )
 
                     calendars.add(calendarInfo)
@@ -124,12 +127,20 @@ class CalendarUtils {
             return tasks.toList()
         }
 
-        fun getTodayTasks(context: Context, calendars: List<String>) : List<Task> {
-            var task = mutableListOf<Task>()
+        fun getTodayTasks(context: Context, calendars: List<String>, allDay: Boolean = false) : List<Task> {
+            val task = mutableListOf<Task>()
             calendars.forEach {
                 task.addAll(getCalendarEvents(context, it, 2))
             }
-            return task
+            return task.filter { it.allDay == allDay }
+        }
+
+        fun getAssignments(context: Context, calendars: List<String>, allDay: List<Boolean> = listOf(true)) : List<Task> {
+            val task = mutableListOf<Task>()
+            calendars.forEach {
+                task.addAll(getCalendarEvents(context, it, 365))
+            }
+            return task.filter { allDay.contains(it.allDay) }
         }
     }
 }
