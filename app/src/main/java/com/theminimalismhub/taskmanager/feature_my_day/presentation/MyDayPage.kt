@@ -26,7 +26,9 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
 import com.theminimalismhub.taskmanager.Pages
+import com.theminimalismhub.taskmanager.core.OnLifecycleEvent
 import com.theminimalismhub.taskmanager.core.consts.Padding
 import com.theminimalismhub.taskmanager.feature_task.presentation.ActiveEventTile
 import com.theminimalismhub.taskmanager.feature_task.presentation.BetweenEvents
@@ -36,10 +38,14 @@ import com.theminimalismhub.taskmanager.utils.TimeConverter
 @Composable
 fun MyDayPage(vm: MyDayVM = hiltViewModel()) {
 
-    SideEffect {
-        Log.i("LOAD", "E Page load")
-        vm.load()
+    OnLifecycleEvent { owner, event ->
+        when(event) {
+            Lifecycle.Event.ON_START -> vm.load()
+            Lifecycle.Event.ON_RESUME -> vm.load()
+            else -> { }
+        }
     }
+
     Column {
         Spacer(modifier = Modifier.height(if(vm.state.value.tasks.isEmpty()) 0.dp else Padding.SECTION_MASSIVE))
         vm.state.value.tasks.forEachIndexed { index, task ->

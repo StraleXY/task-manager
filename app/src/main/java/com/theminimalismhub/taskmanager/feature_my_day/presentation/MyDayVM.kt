@@ -2,6 +2,7 @@ package com.theminimalismhub.taskmanager.feature_my_day.presentation
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel

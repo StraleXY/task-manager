@@ -24,19 +24,22 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import com.theminimalismhub.taskmanager.core.OnLifecycleEvent
 import com.theminimalismhub.taskmanager.core.consts.Padding
 import com.theminimalismhub.taskmanager.feature_task.presentation.TaskTile
 
 @Composable
 fun AssignmentsPage(vm: AssignmentsVM = hiltViewModel()) {
 
-    SideEffect {
-        Log.i("LOAD", "A Page load")
-        vm.load()
+    OnLifecycleEvent { owner, event ->
+        when(event) {
+            Lifecycle.Event.ON_RESUME -> vm.load()
+            else -> { }
+        }
     }
 
     Column {
-//        Spacer(modifier = Modifier.height(if(vm.state.value.tasks.isEmpty()) Padding.SECTION else Padding.SECTION_MASSIVE))
         vm.state.value.tasks.sortedBy { it.timeStart } .forEach { task ->
             TaskTile(task = task)
             Spacer(modifier = Modifier.height(Padding.SECTION))

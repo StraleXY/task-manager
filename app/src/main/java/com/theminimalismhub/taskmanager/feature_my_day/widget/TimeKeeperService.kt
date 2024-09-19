@@ -55,7 +55,6 @@ class TimeKeeperService : Service() {
                     glanceIds.forEach { glanceId ->
                         widget.update(context, glanceId)
                     }
-                    Log.i("Worker", "Widget Updated!")
 
                     context.getSharedPreferences("TKS", Context.MODE_PRIVATE)
                         .edit()

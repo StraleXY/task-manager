@@ -68,7 +68,7 @@ fun HomePage() {
                )
             }
             IconButton(
-                modifier = Modifier.offset(x = (-12).dp, y = (-48).dp),
+                modifier = Modifier.offset(x = 0.dp, y = (-12).dp),
                 onClick = { NavigationController.getInstance().show(Pages.SETTINGS_KEY) },
             ) {
                 Icon(

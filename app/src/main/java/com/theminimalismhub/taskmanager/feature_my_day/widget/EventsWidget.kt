@@ -30,6 +30,7 @@ import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
 import com.theminimalismhub.taskmanager.core.consts.Padding
+import com.theminimalismhub.taskmanager.core.local_storage.LocalPref
 import com.theminimalismhub.taskmanager.feature_task.domain.model.Task
 import com.theminimalismhub.taskmanager.utils.CalendarUtils
 import com.theminimalismhub.taskmanager.utils.TimeConverter
@@ -46,7 +47,7 @@ class EventsWidget : GlanceAppWidget() {
         this.context = context
         this.id = id
 
-        var tasks = CalendarUtils.getTodayTasks(context, listOf("9", "11", "20", "24", "27", "28", "29")).sortedBy { it.timeStart }
+        val tasks = CalendarUtils.getTodayTasks(context, LocalPref(context).getSelectedEventCalendars().map { it.toString() }).sortedBy { it.timeStart }
 
         provideContent {
             Main(task = tasks.firstOrNull())
@@ -99,7 +100,7 @@ class EventsWidget : GlanceAppWidget() {
                 )
                 Spacer(modifier = GlanceModifier.height(Padding.ITEM_S))
                 Text(
-                    text = timeToShow!!,
+                    text = timeToShow,
                     style = TextStyle(
                         color = ColorProvider(Color(1f, 1f, 1f)),
                         fontSize = 65.sp

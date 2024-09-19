@@ -16,9 +16,7 @@ class EventsWidgetReceiver : GlanceAppWidgetReceiver() {
         super.onEnabled(context)
         context?.let {
             val intent = Intent(context, TimeKeeperService::class.java)
-            intent.putExtra("key","TimeKeeper")
             context.startForegroundService(intent)
-            Log.i("Worker", "Started Worker")
         }
     }
 }
