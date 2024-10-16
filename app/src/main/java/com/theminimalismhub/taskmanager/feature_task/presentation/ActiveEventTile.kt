@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.theminimalismhub.taskmanager.core.consts.Padding
 import com.theminimalismhub.taskmanager.feature_task.domain.model.Task
@@ -57,7 +58,8 @@ fun ActiveEventTile(
             },
             text = task.title,
             style = MaterialTheme.typography.headlineMedium,
-            color = Color(task.color?.toInt() ?: 0)
+            color = Color(task.color?.toInt() ?: 0),
+            textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(Padding.ITEM_S))
         Text(

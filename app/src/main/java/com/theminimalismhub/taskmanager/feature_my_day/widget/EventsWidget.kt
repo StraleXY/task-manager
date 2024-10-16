@@ -27,6 +27,7 @@ import androidx.glance.layout.Column
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.padding
 import androidx.glance.text.Text
+import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
 import com.theminimalismhub.taskmanager.core.consts.Padding
@@ -86,7 +87,8 @@ class EventsWidget : GlanceAppWidget() {
                     style = TextStyle(
                         color = ColorProvider(Color(task.color?.toInt() ?: 0)),
                         fontSize = 26.sp,
-                        fontWeight = androidx.glance.text.FontWeight.Normal
+                        fontWeight = androidx.glance.text.FontWeight.Normal,
+                        textAlign = TextAlign.Center
                     )
                 )
                 Spacer(modifier = GlanceModifier.height(Padding.ITEM_S))
